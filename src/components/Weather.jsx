@@ -52,7 +52,10 @@ const Weather = () => {
         location: data.name,
         icon: icon,
       });
-    } catch (error) {}
+    } catch (error) {
+      setWeatherData(false)
+      console.error("Erro ao buscar dados meteorológicos")
+    }
   };
 
   useEffect(() => {
