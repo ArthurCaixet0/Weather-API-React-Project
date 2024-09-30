@@ -11,7 +11,7 @@ import humidity_icon from "../assets/humidity.png";
 
 const Weather = () => {
 
-  const inputRef = useRef()
+  const inputRef = useRef();
   const [weatherData, setWeatherData] = useState(false);
 
   const allIcons = {
@@ -33,7 +33,7 @@ const Weather = () => {
 
   const search = async (city) => {
     if(city === ""){
-      alert("Coloque uma cidade")
+      alert("Coloque uma cidade");
       return;
     }
     try {
@@ -45,7 +45,11 @@ const Weather = () => {
       const data = await response.json();
 
       if(!response.ok){
-        alert(data.message);
+        if(data.message === "city not found") {
+          alert("Cidade não encontrada. Tente novamente.");
+        } else {
+          alert(data.message); // Outras mensagens de erro continuam como estão
+        }
         return;
       }
 
@@ -59,8 +63,8 @@ const Weather = () => {
         icon: icon,
       });
     } catch (error) {
-      setWeatherData(false)
-      console.error("Erro ao buscar dados meteorológicos")
+      setWeatherData(false);
+      console.error("Erro ao buscar dados meteorológicos");
     }
   };
 
@@ -72,31 +76,29 @@ const Weather = () => {
     <div className="weather">
       <div className="search-bar">
         <input ref={inputRef} type="text" placeholder="Pesquisar" />
-        <img src={search_icon} alt=""  onClick={()=>search(inputRef.current.value)}/>
+        <img src={search_icon} alt=""  onClick={() => search(inputRef.current.value)} />
       </div>
-      {weatherData?<>
-      <img src={weatherData.icon} alt="" className="weather-icon" />
-      <p className="temperature">{weatherData.temperature}°c</p>
-      <p className="location">{weatherData.location}</p>
-      <div className="weather-data">
-        <div className="col">
-          <img src={humidity_icon} alt="" />
-          <div>
-            <p>{weatherData.humidity} % </p>
-            <span>Umidade</span>
+      {weatherData ? <>
+        <img src={weatherData.icon} alt="" className="weather-icon" />
+        <p className="temperature">{weatherData.temperature}°c</p>
+        <p className="location">{weatherData.location}</p>
+        <div className="weather-data">
+          <div className="col">
+            <img src={humidity_icon} alt="" />
+            <div>
+              <p>{weatherData.humidity} % </p>
+              <span>Umidade</span>
+            </div>
+          </div>
+          <div className="col">
+            <img src={wind_icon} alt="" />
+            <div>
+              <p>{weatherData.windSpeed} Km/h </p>
+              <span>Vel. do vento </span>
+            </div>
           </div>
         </div>
-        <div className="col">
-          <img src={wind_icon} alt="" />
-          <div>
-            <p>{weatherData.windSpeed} Km/h </p>
-            <span>Vel. do vento </span>
-          </div>
-        </div>
-      </div>
-      </>:<></>}
-
-      
+      </> : <></>}
     </div>
   );
 };
